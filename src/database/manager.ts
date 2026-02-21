@@ -93,7 +93,6 @@ export class DatabaseManager {
   }
 
   static async getMssqlConnection() {
-    const { drizzle } = await import('drizzle-orm/mssql-proxy');
     const mssql = await import('mssql');
     const cfg = this.getConfig('mssql');
     const pool = await mssql.connect({

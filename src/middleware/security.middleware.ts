@@ -131,7 +131,11 @@ export const securityHeaders = (_req: Request, res: Response, next: NextFunction
 };
 
 // ─── SQL Injection guard ──────────────────────────────────────────────────────
-export const sqlInjectionGuard = (req: Request, res: Response, next: NextFunction) => {
+export const sqlInjectionGuard = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const sqlPattern = /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|INTO|FROM|WHERE|OR|AND)\b.*--)|('.*')|(\b1=1\b)/i;
   const bodyStr = JSON.stringify(req.body);
   const queryStr = JSON.stringify(req.query);
@@ -141,7 +145,8 @@ export const sqlInjectionGuard = (req: Request, res: Response, next: NextFunctio
       path: req.path,
       requestId: req.requestId,
     });
-    return ResponseUtil.error(res, 'Invalid input detected', 400);
+    ResponseUtil.error(res, 'Invalid input detected', 400);
+    return;
   }
   next();
 };

@@ -6,17 +6,23 @@ import { UserRole } from '../types';
 
 const tokenCache = new CacheService('auth');
 
-export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const token = JwtUtil.extractFromHeader(req.headers.authorization);
     if (!token) {
-      return ResponseUtil.unauthorized(res, 'Authentication token required');
+      ResponseUtil.unauthorized(res, 'Authentication token required');
+      return;
     }
 
     // Check blacklist
     const isBlacklisted = await tokenCache.isBlacklisted(token);
     if (isBlacklisted) {
-      return ResponseUtil.unauthorized(res, 'Token has been revoked');
+      ResponseUtil.unauthorized(res, 'Token has been revoked');
+      return;
     }
 
     const payload = JwtUtil.verifyAccessToken(token);
@@ -25,22 +31,27 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   } catch (error: unknown) {
     const err = error as Error;
     if (err.name === 'TokenExpiredError') {
-      return ResponseUtil.unauthorized(res, 'Token has expired');
+      ResponseUtil.unauthorized(res, 'Token has expired');
+      return;
     }
     if (err.name === 'JsonWebTokenError') {
-      return ResponseUtil.unauthorized(res, 'Invalid token');
+      ResponseUtil.unauthorized(res, 'Invalid token');
+      return;
     }
-    return ResponseUtil.unauthorized(res, 'Authentication failed');
+    ResponseUtil.unauthorized(res, 'Authentication failed');
+    return;
   }
 };
 
 export const authorize = (...roles: UserRole[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      return ResponseUtil.unauthorized(res);
+      ResponseUtil.unauthorized(res);
+      return;
     }
     if (!roles.includes(req.user.role)) {
-      return ResponseUtil.forbidden(res, `Access denied. Required roles: ${roles.join(', ')}`);
+      ResponseUtil.forbidden(res, `Access denied. Required roles: ${roles.join(', ')}`);
+      return;
     }
     next();
   };
@@ -48,7 +59,10 @@ export const authorize = (...roles: UserRole[]) => {
 
 // Self or admin can access
 export const selfOrAdmin = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.user) return ResponseUtil.unauthorized(res);
+  if (!req.user) {
+    ResponseUtil.unauthorized(res);
+    return;
+  }
   const targetId = req.params.userId || req.params.id;
   if (req.user.role === 'admin' || req.user.sub === targetId) {
     return next();
@@ -57,8 +71,15 @@ export const selfOrAdmin = (req: Request, res: Response, next: NextFunction) => 
 };
 
 // Department scope middleware
-export const departmentScope = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.user) return ResponseUtil.unauthorized(res);
+export const departmentScope = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.user) {
+    ResponseUtil.unauthorized(res);
+    return;
+  }
   if (req.user.role === 'admin') {
     // Admin sees all - no filter
     req.query.departmentFilter = 'all';
