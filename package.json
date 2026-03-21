@@ -1,7 +1,7 @@
 {
-  "name": "@prasad-rtns/shared",
-  "version": "1.0.2",
-  "description": "Shared types, utilities, and middleware for UMP microservices",
+  "name": "@rtns/core",
+  "version": "1.0.0",
+  "description": "Reusable Technical Node Services (RTNS): Shared types, utilities, and middleware for building scalable microservices.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

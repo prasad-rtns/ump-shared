@@ -50,7 +50,7 @@ export const authorize = (...roles: UserRole[]) => {
       return;
     }
     if (!roles.includes(req.user.role)) {
-      ResponseUtil.forbidden(res, `Access denied. Required roles: ${roles.join(', ')}`);
+      ResponseUtil.forbidden(res, `Access denied. Required roles: ${roles.join(', ')} --- Reqested role: ${JSON.stringify(req?.user)}`);
       return;
     }
     next();
