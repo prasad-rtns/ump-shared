@@ -31,10 +31,10 @@ cd ump-polyrepo/shared/
 # Initialize git
 git init
 git add .
-git commit -m "Initial commit: @ump/shared v1.0.0"
+git commit -m "Initial commit: @rtns/core v1.0.0"
 
 # Link to GitHub (replace YOUR_USERNAME)
-git remote add origin https://github.com/YOUR_USERNAME/ump-shared.git
+git remote add origin https://github.com/prasad-rtns/ump-shared.git
 git branch -M main
 git push -u origin main
 ```
@@ -107,6 +107,30 @@ npm publish --access public
 
 # ✅ Success! You should see:
 # + @YOUR_NPM_USERNAME/shared@1.0.0
+```
+
+## Any ERROR
+```
+✅ Solution (Step-by-Step)
+🔹 Step 1: Create Scope (Organization)
+Go to 👉 https://www.npmjs.com/
+Login with your account
+Click on profile → "Add Organization"
+Create:
+Organization name: rtns
+
+👉 ⚠️ IMPORTANT:
+
+If rtns is already taken → you must choose another name like:
+rtns-tech
+rtns-dev
+rtns-org
+
+Ensure your npm user is Owner/Admin
+
+`npm login`
+
+$ npm publish --access public
 ```
 
 ### 2.5 Verify Published Package
